@@ -58,7 +58,12 @@ class ProductManager {
         }
       }
 
-      const products = await ProductModel.countDocuments(queryOptions);
+      const products = await ProductModel.find(queryOptions)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit);
+
+      const totalProducts = await ProductModel.countDocuments(queryOptions);
 
       const totalPages = Math.ceil(totalProducts / limit);
       const hasPrevPage = page > 1;

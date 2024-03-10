@@ -6,6 +6,8 @@ const CartManager = require("../controllers/cart-manager-db.js");
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
+//Vissta de productos:
+
 router.get("/products", async (req, res) => {
   try {
     const { page = 1, limit = 2 } = req.query;
@@ -15,7 +17,7 @@ router.get("/products", async (req, res) => {
     });
 
     const newArray = products.docs.map((product) => {
-      const { _id, ...rest } = product.toObjet();
+      const { _id, ...rest } = product.toObject();
       return rest;
     });
 
@@ -37,6 +39,8 @@ router.get("/products", async (req, res) => {
   }
 });
 
+//Vista de carrito:
+
 router.get("/carts/:cid", async (req, res) => {
   const cartId = req.params.cid;
 
@@ -49,7 +53,7 @@ router.get("/carts/:cid", async (req, res) => {
     }
 
     const productsInCart = cart.products.map((item) => ({
-      product: item.product.toObjet(),
+      product: item.product.toObject(),
       quantity: item.quantity,
     }));
 
@@ -58,6 +62,35 @@ router.get("/carts/:cid", async (req, res) => {
     console.error("Error al obtener el carrito", error);
     res.status(500).json({ error: "Error interno del servidor" });
   }
+});
+
+//Vista de login:
+
+router.get("/login", (req, res) => {
+  if (req.session.login) {
+    return res.redirect("/profile");
+  }
+
+  res.render("login");
+});
+
+//Vista de registro:
+
+router.get("/register", (req, res) => {
+  if (req.session.login) {
+    return res.redirect("/profile");
+  }
+
+  res.render("register");
+});
+
+//Vista perfil:
+
+router.get("/profile", (req, res) => {
+  if (!req.session.login) {
+    return res.redirect("/login");
+  }
+  res.render("profile", { user: req.session.user });
 });
 
 module.exports = router;

@@ -1,22 +1,30 @@
 <h1> Productos </h1>
 
 <div class="card-conteiner">
-  {{#each productos}}
+  {{#each products}}
     <div class="card">
       <h2>{{title}}</h2>
       <p>{{description}}</p>
       <p>Price: ${{price}}</p>
       <p>Category: {{category}} </p>
-      <button> Agregar al Carrito </button>
+      <button class="btn-addCart"> Agregar al Carrito </button>
     </div>
   {{/each}}
 </div>
 
-{{#if hasNextPage}}
-  <a href="/products?page={{nextPage}}"> Siguiente </a>
-{{/if}}
-{{#if hasPrevPage}}
-  <a href="/products?page={{prevPage}}"> Anterior </a>
-{{/if}}
+<div class="page-container">
+  {{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}"><button
+        class="btn-page"
+      >Ant</button></a>
+  {{/if}}
 
-<p>Pagina {{currentPage}} de {{totalPages}} </p>
+  <div class="pages">
+    <p>Pagina {{currentPage}} de {{totalPage}} </p>
+  </div>
+
+  {{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}"><button class="btn-page">
+        Sig</button></a>
+  {{/if}}
+</div>
