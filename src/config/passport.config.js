@@ -75,38 +75,40 @@ const initializePassport = () => {
     let user = await UserModel.findById({ _id: id });
     done(null, user);
   });
-};
 
-//Estrategia GitHub
-passport.use(
-  "github",
-  new GitHubStrategy({
-    clientID: "Iv1.63dddd80bb34a6f6",
-    clientSecret: "2a32878b0c646bf75e8267df760f8141319019d8",
-    callbackURL: "http://localhost:8080/api/sessions/githubcallback",
-  }),
-  async (accessToken, refreshToken, profile, done) => {
-    try {
-      let user = await UserModel.findOne({ email: profile._json.email });
+  //Estrategia GitHub
+  passport.use(
+    "github",
+    new GitHubStrategy(
+      {
+        clientID: "Iv1.63dddd80bb34a6f6",
+        clientSecret: "2a32878b0c646bf75e8267df760f8141319019d8",
+        callbackURL: "http://localhost:8080/api/sessions/githubcallback",
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          let user = await UserModel.findOne({ email: profile._json.email });
 
-      if (!user) {
-        let newUser = {
-          first_name: profile._json.name,
-          last_name: "",
-          age: profile._json.age,
-          email: profile._json.email,
-          password: "",
-        };
+          if (!user) {
+            let newUser = {
+              first_name: profile._json.name,
+              last_name: "",
+              age: "",
+              email: profile._json.email,
+              password: "",
+            };
 
-        let result = await UserModel.create(newUser);
-        done(null, result);
-      } else {
-        done(null, user);
+            let result = await UserModel.create(newUser);
+            done(null, result);
+          } else {
+            done(null, user);
+          }
+        } catch (error) {
+          return done(error);
+        }
       }
-    } catch (error) {
-      return done(error);
-    }
-  }
-);
+    )
+  );
+};
 
 module.exports = initializePassport;
