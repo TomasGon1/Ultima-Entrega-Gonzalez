@@ -5,6 +5,14 @@
     <div class="card">
       <p>Producto: {{this.product.title}}</p>
       <p>Cantidad: {{this.quantity}}</p>
+      <p>Precio: ${{this.product.totalPrice}}</p>
+      <button
+        onclick="deleteProduct('{{this.cartId}}', '{{this.product._id}}')"
+        class="btn-addCart"
+      >Eliminar</button>
     </div>
   {{/each}}
 </div>
+
+<button onclick="emptyCart('{{cartId}}')" class="btn-addCart">Vaciar Carrito</button>
+<h3>Total: ${{totalBuys}}</h3>

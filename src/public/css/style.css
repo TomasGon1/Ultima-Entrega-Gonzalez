@@ -17,6 +17,12 @@ h2 {
   font-family: "Righteous", sans-serif;
 }
 
+h3 {
+  font-size: 2rem;
+  color: black;
+  font-family: "Righteous", sans-serif;
+}
+
 p {
   font-size: 1.3rem;
   color: black;

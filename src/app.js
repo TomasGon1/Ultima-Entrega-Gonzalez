@@ -9,6 +9,9 @@ const passport = require("passport");
 const initializePassport = require("./config/passport.config.js");
 require("./database.js");
 
+const config = require("./config/config.js");
+const { mongo_url } = config;
+
 const routerP = require("./routes/products.router.js");
 const routerC = require("./routes/carts.router.js");
 const routerU = require("./routes/users.router.js");
@@ -26,8 +29,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://xnicksyux:coder1234@cluster0.4c2ggph.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0",
+      mongoUrl: mongo_url,
       ttl: 100,
     }),
   })
