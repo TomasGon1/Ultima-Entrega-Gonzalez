@@ -92,6 +92,19 @@ class ViewsController {
     }
     res.render("profile", { user: req.session.user });
   }
+
+  async renderRealTimeProducts(req, res) {
+    try {
+      res.render("realtimeproducts");
+    } catch (error) {
+      console.log("error en la vista real time", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  }
+
+  async renderChat(req, res) {
+    res.render("chat");
+  }
 }
 
 module.exports = ViewsController;

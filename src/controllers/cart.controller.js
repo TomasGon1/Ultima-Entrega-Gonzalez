@@ -1,10 +1,10 @@
-const CartServices = require("../services/cart.services.js");
-const cartServices = new CartServices();
+const CartRepository = require("../repositories/cart.repository.js");
+const cartRepository = new CartRepository();
 
 class CartController {
   async newCart(req, res) {
     try {
-      const newCart = await cartServices.createCart();
+      const newCart = await cartRepository.createCart();
       res.json(newCart);
     } catch (error) {
       console.log("Error al crear carrito", error);
@@ -15,7 +15,7 @@ class CartController {
   async getCartById(req, res) {
     const cartId = req.params.cid;
     try {
-      const cart = await cartServices.getCartById(cartId);
+      const cart = await cartRepository.getCartById(cartId);
       if (!cart) {
         return res
           .status(400)
@@ -33,7 +33,7 @@ class CartController {
     const productId = req.params.pid;
     const quantity = req.body.quantity || 1;
     try {
-      const updateCart = await cartServices.addProductToCart(
+      const updateCart = await cartRepository.addProductToCart(
         cartId,
         productId,
         quantity
@@ -49,7 +49,7 @@ class CartController {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     try {
-      const updateCart = await cartServices.deleteProductToCart(
+      const updateCart = await cartRepository.deleteProductToCart(
         cartId,
         productId
       );
@@ -68,7 +68,7 @@ class CartController {
     const cartId = req.params.cid;
     const updatedProducts = req.body;
     try {
-      const updatedCart = await cartServices.updateCart(
+      const updatedCart = await cartRepository.updateCart(
         cartId,
         updatedProducts
       );
@@ -84,7 +84,7 @@ class CartController {
     const productId = req.params.pid;
     const newQuantity = req.body.quantity;
     try {
-      const updatedCart = await cartServices.updateQuantityOfProduct(
+      const updatedCart = await cartRepository.updateQuantityOfProduct(
         cartId,
         productId,
         newQuantity
@@ -106,7 +106,7 @@ class CartController {
   async emptyCart(req, res) {
     const cartId = req.params.cid;
     try {
-      const updatedCart = await cartServices.emptyCart(cartId);
+      const updatedCart = await cartRepository.emptyCart(cartId);
       res.json({
         status: "success",
         message:

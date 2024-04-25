@@ -1,11 +1,11 @@
-const ProductServices = require("../services/product.services.js");
-const productServices = new ProductServices();
+const ProductRepository = require("../repositories/product.repository.js");
+const productRepository = new ProductRepository();
 
 class ProductController {
   async addProducts(req, res) {
     const newProduct = req.body;
     try {
-      const result = await productServices.addProducts(newProduct);
+      const result = await productRepository.addProducts(newProduct);
       res.json(result);
     } catch (error) {
       console.error("Error al agregar el producto", error);
@@ -17,7 +17,7 @@ class ProductController {
     try {
       const { limit = 10, page = 1, sort, query } = req.query;
 
-      const products = await productServices.getProducts({
+      const products = await productRepository.getProducts({
         limit: parseInt(limit),
         page: parseInt(page),
         sort,
@@ -49,7 +49,7 @@ class ProductController {
   async getProductsById(req, res) {
     const id = req.params.pid;
     try {
-      const product = await productServices.getProductsById(id);
+      const product = await productRepository.getProductsById(id);
       if (!product) {
         return res.json({ error: "Producto no encontrado" });
       }
@@ -64,7 +64,7 @@ class ProductController {
     const id = req.params.pid;
     const updateProduct = req.body;
     try {
-      const result = await productServices.updateProducts(id, updateProduct);
+      const result = await productRepository.updateProducts(id, updateProduct);
       res.json({ result, message: "Producto actualizado con exito!" });
     } catch (error) {
       console.error("Error al actualizar producto", error);
@@ -75,7 +75,7 @@ class ProductController {
   async deleteProductsById(req, res) {
     const id = req.params.pid;
     try {
-      const result = await productServices.deleteProductsById(id);
+      const result = await productRepository.deleteProductsById(id);
       res.json({ result, message: "Producto eliminado con exito!" });
     } catch (error) {
       console.error("Error al elimiar producto", error);

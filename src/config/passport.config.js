@@ -4,6 +4,8 @@ const GitHubStrategy = require("passport-github2");
 
 const UserModel = require("../models/user.model.js");
 const { createHash, isValidPassword } = require("../utils/hashbcrypt.js");
+const UserDTO = require("../dto/user.dto.js");
+const CartModel = require("../models/cart.model.js");
 
 const LocalStrategy = local.Strategy;
 
@@ -20,23 +22,31 @@ const initializePassport = () => {
 
         try {
           //Verifico si existe un registro con ese mail
-          let user = await UserModel.findOne({ email: email });
-          if (user) return done(null, false);
+          const userExist = await UserModel.findOne({ email });
+          if (userExist) {
+            return res.status(400).send("Usuario ya registrado");
+          }
+
+          //Carrito
+          const newCart = new CartModel();
+          await newCart.save();
 
           //Registro nuevo
-          let newUser = {
+          const newUser = {
             first_name,
             last_name,
             email,
             age,
             password: createHash(password),
+            cart: newCart._id,
           };
 
           let resultado = await UserModel.create(newUser);
 
           return done(null, resultado);
         } catch (error) {
-          return done(error);
+          console.error(error);
+          res.status(500).send("Error interno del servidor");
         }
       }
     )
@@ -54,14 +64,15 @@ const initializePassport = () => {
           //Verifico si existe un usuario con ese email
           const user = await UserModel.findOne({ email });
           if (!user) {
-            console.log("Este usuario no existe");
-            return done(null, false);
+            return res.status(401).send("Usuario no válido");
           }
+
           //verifico la contraseña
           if (!isValidPassword(password, user)) return done(null, false);
           return done(null, user);
         } catch (error) {
-          return done(error);
+          console.error(error);
+          res.status(500).send("Error interno del servidor");
         }
       }
     )

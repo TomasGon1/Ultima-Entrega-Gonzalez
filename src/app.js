@@ -53,6 +53,10 @@ app.use("/api/sessions", routerS);
 app.use("/", routerV);
 
 //Listen
-app.listen(PUERTO, () => {
+const httpServer = app.listen(PUERTO, () => {
   console.log(`Escuchando en el puerto: ${PUERTO}`);
 });
+
+//Websockets: 
+const SocketManager = require("./sockets/socketmanager.js");
+new SocketManager(httpServer);

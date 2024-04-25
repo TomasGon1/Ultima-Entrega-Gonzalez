@@ -19,4 +19,10 @@ router.get("/register", viewsController.renderRegister);
 //Vista perfil:
 router.get("/profile", viewsController.renderProfile);
 
+//Vista chat:
+router.get("/chat", viewsController.renderChat);
+
+//Vista real time products:
+router.get("/realtimeproducts", viewsController.renderRealTimeProducts);
+
 module.exports = router;
