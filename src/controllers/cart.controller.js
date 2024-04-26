@@ -1,5 +1,10 @@
+const TicketModel = require("../models/ticket.model.js");
+const UserModel = require("../models/user.model.js");
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
+const ProductRepository = require("../repositories/product.repository.js");
+const productRepository = new ProductRepository();
+const { generateTicketCode, buyTotal } = require("../utils/cartutils.js");
 
 class CartController {
   async newCart(req, res) {
@@ -116,6 +121,49 @@ class CartController {
     } catch (error) {
       console.error("Error al vaciar el carrito", error);
       res.status(500).json({ message: "Error interno del servidor" });
+    }
+  }
+
+  async endBuys(req, res) {
+    const cartId = req.params.cid;
+    try {
+      const cart = await cartRepository.getCartById(cartId);
+      const products = cart.products;
+
+      const nonAvilableProducts = [];
+
+      for (const item of products) {
+        const productId = item.product;
+        const product = await productRepository.getProductsById(productId);
+
+        if (product.stock >= item.quantity) {
+          product.stock -= item.quantity;
+          await product.save();
+        } else {
+          nonAvilableProducts.push(productId);
+        }
+      }
+
+      const userCart = await UserModel.findOne({ cart: cartId });
+
+      const ticket = new TicketModel({
+        code: generateTicketCode(),
+        purchase_datetime: new Date(),
+        amounth: buyTotal(cart.products),
+        purchaser: userCart._id,
+      });
+      await ticket.save();
+
+      cart.products = cart.products.filter((item) =>
+        nonAvilableProducts.some((productId) => productId.equals(item.product))
+      );
+
+      await cart.save();
+
+      res.status(200).json({ nonAvilableProducts });
+    } catch (error) {
+      console.error("Error al procesar la compra:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 }
