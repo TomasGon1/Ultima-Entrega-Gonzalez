@@ -4,7 +4,6 @@ const GitHubStrategy = require("passport-github2");
 
 const UserModel = require("../models/user.model.js");
 const { createHash, isValidPassword } = require("../utils/hashbcrypt.js");
-const UserDTO = require("../dto/user.dto.js");
 const CartModel = require("../models/cart.model.js");
 const config = require("./config.js");
 const { client_id, client_secret, callback_url } = config;

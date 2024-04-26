@@ -15,7 +15,6 @@ const { mongo_url } = config;
 const routerP = require("./routes/products.router.js");
 const routerC = require("./routes/carts.router.js");
 const routerU = require("./routes/users.router.js");
-const routerS = require("./routes/sessions.router.js");
 const routerV = require("./routes/views.router.js");
 
 //Middlewares
@@ -49,7 +48,6 @@ app.set("views", "./src/views");
 app.use("/api/products", routerP);
 app.use("/api/carts", routerC);
 app.use("/api/users", routerU);
-app.use("/api/sessions", routerS);
 app.use("/", routerV);
 
 //Listen

@@ -1,30 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const UserController = require("../controllers/user.controller.js");
+const userController = new UserController();
 
-//Registro con passport:
-
-router.post(
-  "/",
-  passport.authenticate("register", { failureRedirect: "/failedregister" }),
-  async (req, res) => {
-    if (!req.user) return res.status(400).send({ status: "error" });
-
-    req.session.user = {
-      first_name: req.user.first_name,
-      last_name: req.user.last_name,
-      age: req.user.age,
-      email: req.user.email,
-    };
-
-    req.session.login = true;
-
-    res.redirect("/profile");
-  }
-);
-
+//Registro
+router.post("/register", passport.authenticate("register", { failureRedirect: "/failedregister" }), userController.register);
 router.get("/failedregister", (req, res) => {
   res.send({ error: "Registro fallido" });
 });
+
+//Login
+router.post("/login", passport.authenticate("login",{ failureRedirect: "/faillogin" }), userController.login);
+router.get("/faillogin", (req, res) => {
+  res.send({ error: "Fallo todo el login" });
+});
+
+//Perfil
+router.get("/profile", passport.authenticate("local", {session: false} ), userController.profile);
+
+//Logout
+router.get("/logout", userController.logout);
+
+//Github
+router.get("/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res) => {});
+router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "login" }), userController.github);
+
 
 module.exports = router;

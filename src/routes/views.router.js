@@ -17,7 +17,7 @@ router.get("/login", viewsController.renderLogin);
 router.get("/register", viewsController.renderRegister);
 
 //Vista perfil:
-router.get("/profile", viewsController.renderProfile);
+//router.get("/profile", viewsController.renderProfile);
 
 //Vista chat:
 router.get("/chat", viewsController.renderChat);

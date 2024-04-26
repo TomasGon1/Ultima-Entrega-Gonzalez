@@ -86,12 +86,12 @@ class ViewsController {
     res.render("register");
   }
 
-  async renderProfile(req, res) {
+  /* async renderProfile(req, res) {
     if (!req.session.login) {
       return res.redirect("/login");
     }
     res.render("profile", { user: req.session.user });
-  }
+  } */
 
   async renderRealTimeProducts(req, res) {
     try {
