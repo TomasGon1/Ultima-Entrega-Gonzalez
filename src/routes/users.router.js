@@ -58,7 +58,20 @@ router.get("/faillogin", (req, res) => {
 });
 
 //Perfil
+router.get("/profile", (req, res) => {
+  const userDTO = new UserDTO(
+    req.user.first_name,
+    req.user.last_name,
+    req.user.role
+  );
 
+  const admin = req.user.role === "admin";
+  
+  if (!req.session.login) {
+    return res.redirect("/login");
+  }
+  res.render("profile", { user: req.session.user });
+});
 
 //Logout
 router.get("/logout", (req, res) => {
