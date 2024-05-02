@@ -7,6 +7,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const initializePassport = require("./config/passport.config.js");
+const errorHandler = require("./middleware/error.js");
 require("./database.js");
 
 const config = require("./config/config.js");
@@ -16,12 +17,14 @@ const routerP = require("./routes/products.router.js");
 const routerC = require("./routes/carts.router.js");
 const routerU = require("./routes/users.router.js");
 const routerV = require("./routes/views.router.js");
+const routerMock = require("./routes/mocking.router.js");
 
 //Middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("./src/public"));
 app.use(cookieParser());
+app.use(errorHandler);
 app.use(
   session({
     secret: "secretCoder",
@@ -49,6 +52,9 @@ app.use("/api/products", routerP);
 app.use("/api/carts", routerC);
 app.use("/api/users", routerU);
 app.use("/", routerV);
+
+//Dev mocking
+app.use("/", routerMock);
 
 //Listen
 const httpServer = app.listen(PUERTO, () => {

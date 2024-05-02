@@ -1,6 +1,11 @@
 const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
 
+//Custom Errors:
+const { productInfoError } = require("../services/errors/info.js");
+const { EErrors } = require("../services/errors/enums.js");
+const CustomError = require("../services/errors/custom-error.js");
+
 class ProductController {
   async addProducts(req, res) {
     const newProduct = req.body;
@@ -51,7 +56,12 @@ class ProductController {
     try {
       const product = await productRepository.getProductsById(id);
       if (!product) {
-        return res.json({ error: "Producto no encontrado" });
+        throw CustomError.createError({
+          name: "Invalid product ID",
+          cause: productInfoError(product),
+          message: "Error al encontrar ese producto",
+          code: EErrors.PRODUCT_ERROR,
+        });
       }
       res.json(product);
     } catch (error) {

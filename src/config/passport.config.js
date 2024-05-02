@@ -8,6 +8,14 @@ const CartModel = require("../models/cart.model.js");
 const config = require("./config.js");
 const { client_id, client_secret, callback_url } = config;
 
+//Custom Errors:
+const {
+  registerInfoError,
+  loginInfoError,
+} = require("../services/errors/info.js");
+const { EErrors } = require("../services/errors/enums.js");
+const CustomError = require("../services/errors/custom-error.js");
+
 const LocalStrategy = local.Strategy;
 
 const initializePassport = () => {
@@ -25,7 +33,12 @@ const initializePassport = () => {
           //Verifico si existe un registro con ese mail
           const userExist = await UserModel.findOne({ email });
           if (userExist) {
-            return res.status(400).send("Usuario ya registrado");
+            throw CustomError.createError({
+              name: "Register fail",
+              cause: registerInfoError({ first_name, last_name, email, age }),
+              message: "Error al registrarse",
+              code: EErrors.REGISTER_FAIL,
+            });
           }
 
           //Carrito
@@ -65,7 +78,12 @@ const initializePassport = () => {
           //Verifico si existe un usuario con ese email
           const user = await UserModel.findOne({ email });
           if (!user) {
-            return res.status(401).send("Usuario no válido");
+            throw CustomError.createError({
+              name: "Login fail",
+              cause: loginInfoError({email, password}),
+              message: "Error al intentar logearse, usuario invalido!",
+              code: EErrors.USER_IVALID
+            })
           }
 
           //verifico la contraseña

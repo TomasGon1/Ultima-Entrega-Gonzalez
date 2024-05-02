@@ -6,6 +6,11 @@ const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
 const { generateTicketCode, buyTotal } = require("../utils/cartutils.js");
 
+//Custom Errors:
+const { cartInfoError } = require("../services/errors/info.js");
+const { EErrors } = require("../services/errors/enums.js");
+const CustomError = require("../services/errors/custom-error.js");
+
 class CartController {
   async newCart(req, res) {
     try {
@@ -22,9 +27,12 @@ class CartController {
     try {
       const cart = await cartRepository.getCartById(cartId);
       if (!cart) {
-        return res
-          .status(400)
-          .json({ error: "Error al encontrar carrito por ID" });
+        throw CustomError.createError({
+          name: "Invalid cart ID",
+          cause: cartInfoError(cart),
+          message: "Error al encontrar carrito",
+          code: EErrors.CART_ERROR,
+        });
       }
       return res.json(cart);
     } catch (error) {
