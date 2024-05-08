@@ -1,2 +1,4 @@
 node_modules
-.env
+.env.produccion
+.env.desarrollo
+errors.log

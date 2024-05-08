@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const PUERTO = 8080;
 const exphbs = require("express-handlebars");
 const MongoStore = require("connect-mongo");
 const session = require("express-session");
@@ -11,7 +10,8 @@ const errorHandler = require("./middleware/error.js");
 require("./database.js");
 
 const config = require("./config/config.js");
-const { mongo_url } = config;
+const { mongo_url, port, mode_env } = config;
+const addLogger = require("./middleware/errorLogger.js");
 
 const routerP = require("./routes/products.router.js");
 const routerC = require("./routes/carts.router.js");
@@ -36,6 +36,7 @@ app.use(
     }),
   })
 );
+app.use(addLogger);
 
 //Passport
 initializePassport();
@@ -53,12 +54,21 @@ app.use("/api/carts", routerC);
 app.use("/api/users", routerU);
 app.use("/", routerV);
 
-//Dev mocking
+//Pruebas dev
 app.use("/", routerMock);
+app.use("/loggertest", (req, res) => {
+  req.logger.fatal("Error fatal!!")
+  req.logger.error("Error grave!!");
+  req.logger.warning("Esto es un warning!");
+  req.logger.info("Esto es solo informacion!");
+  req.logger.debug("Esto es un debug!");
+  console.log(config.mode_env);
+  res.send("Test de logs");
+})
 
 //Listen
-const httpServer = app.listen(PUERTO, () => {
-  console.log(`Escuchando en el puerto: ${PUERTO}`);
+const httpServer = app.listen(port, () => {
+  console.log(`Escuchando en el puerto: ${port}`);
 });
 
 //Websockets: 
