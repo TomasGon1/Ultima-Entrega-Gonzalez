@@ -1,114 +1,46 @@
 const passport = require("passport");
-const local = require("passport-local");
-const GitHubStrategy = require("passport-github2");
-
+const LocalStrategy = require("passport-local").Strategy;
+const GitHubStrategy = require("passport-github2").Strategy;
 const UserModel = require("../models/user.model.js");
-const { createHash, isValidPassword } = require("../utils/hashbcrypt.js");
-const CartModel = require("../models/cart.model.js");
+const { isValidPassword } = require("../utils/hashbcrypt.js");
+
 const config = require("./config.js");
 const { client_id, client_secret, callback_url } = config;
 
-//Custom Errors:
-const {
-  registerInfoError,
-  loginInfoError,
-} = require("../services/errors/info.js");
-const { EErrors } = require("../services/errors/enums.js");
-const CustomError = require("../services/errors/custom-error.js");
-
-const LocalStrategy = local.Strategy;
-
+//Estrategia
 const initializePassport = () => {
+  //Local
   passport.use(
-    "register",
-    new LocalStrategy(
-      {
-        passReqToCallback: true,
-        usernameField: "email",
-      },
-      async (req, username, password, done) => {
-        const { first_name, last_name, email, age } = req.body;
-
-        try {
-          //Verifico si existe un registro con ese mail
-          const userExist = await UserModel.findOne({ email });
-          if (userExist) {
-            throw CustomError.createError({
-              name: "Register fail",
-              cause: registerInfoError({ first_name, last_name, email, age }),
-              message: "Error al registrarse",
-              code: EErrors.REGISTER_FAIL,
-            });
-          }
-
-          //Carrito
-          const newCart = new CartModel();
-          await newCart.save();
-
-          //Registro nuevo
-          const newUser = {
-            first_name,
-            last_name,
-            email,
-            age,
-            password: createHash(password),
-            cart: newCart._id,
-          };
-
-          let resultado = await UserModel.create(newUser);
-
-          return done(null, resultado);
-        } catch (error) {
-          console.error(error);
-          res.status(500).send("Error interno del servidor");
-        }
-      }
-    )
-  );
-
-  //Estrategia Login
-  passport.use(
-    "login",
     new LocalStrategy(
       {
         usernameField: "email",
       },
       async (email, password, done) => {
         try {
-          //Verifico si existe un usuario con ese email
           const user = await UserModel.findOne({ email });
+
           if (!user) {
-            throw CustomError.createError({
-              name: "Login fail",
-              cause: loginInfoError({email, password}),
-              message: "Error al intentar logearse, usuario invalido!",
-              code: EErrors.USER_IVALID
-            })
+            return done(null, false, {
+              message: "Correo electronico o contraseña incorrecta",
+            });
           }
 
-          //verifico la contraseña
-          if (!isValidPassword(password, user)) return done(null, false);
+          if (!isValidPassword) {
+            return done(null, false, {
+              message: "Correo electronico o contraseña incorrecta",
+            });
+          }
+
           return done(null, user);
         } catch (error) {
-          console.error(error);
-          res.status(500).send("Error interno del servidor");
+          return done(error);
         }
       }
     )
   );
 
-  passport.serializeUser((user, done) => {
-    done(null, user._id);
-  });
-
-  passport.deserializeUser(async (id, done) => {
-    let user = await UserModel.findById({ _id: id });
-    done(null, user);
-  });
-
-  //Estrategia GitHub
+  //Github
   passport.use(
-    "github",
     new GitHubStrategy(
       {
         clientID: client_id,
@@ -117,28 +49,35 @@ const initializePassport = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await UserModel.findOne({ email: profile._json.email });
+          let user = await UserModel.findOne({
+            email: profile.emails[0].value,
+          });
 
           if (!user) {
-            let newUser = {
-              first_name: profile._json.name,
-              last_name: "",
-              age: "",
-              email: profile._json.email,
-              password: "",
-            };
-
-            let result = await UserModel.create(newUser);
-            done(null, result);
-          } else {
-            done(null, user);
+            user = new UserModel({
+              email: profile.emails[0].value,
+            });
           }
+
+          return done(null, user);
         } catch (error) {
           return done(error);
         }
       }
     )
   );
-};
 
-module.exports = initializePassport;
+  //Serializar y deserializar
+  passport.serializeUser((user, done) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await UserModel.findById(id);
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
+  });
+};
