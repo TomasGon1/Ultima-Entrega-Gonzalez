@@ -17,9 +17,6 @@ router.get("/login", viewsController.renderLogin);
 //Vista de registro:
 router.get("/register", viewsController.renderRegister);
 
-//Vista perfil:
-//router.get("/profile", viewsController.renderProfile);
-
 //Vista chat:
 router.get("/chat", authorize(["usuario", "premium"]),viewsController.renderChat);
 

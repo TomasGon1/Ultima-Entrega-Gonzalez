@@ -16,7 +16,7 @@ class UserController {
   async register(req, res) {
     const { first_name, last_name, email, password, age } = req.body;
     try {
-      const existingUser = await UserModel.finndOne({ email });
+      const existingUser = await UserModel.findOne({ email });
       if (existingUser) {
         throw CustomError.createError({
           name: "Register fail",

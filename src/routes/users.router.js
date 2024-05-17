@@ -1,18 +1,29 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
 
 const UserController = require("../controllers/user.controller.js");
+const passport = require("passport");
 const userController = new UserController();
 
 //Registro
-router.post("/register", userController.register);
+router.post(
+  "/register",
+  passport.authenticate("local"),
+  userController.register
+);
 
 //Login
-router.post("/login", userController.login);
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/profile",
+    failureRedirect: "/login",
+  }),
+  userController.login
+);
 
 //Perfil
-router.get("/profile", passport.authenticate("local", {session: false}), userController.profile);
+router.get("/profile", passport.authenticate("local"), userController.profile);
 
 //Logout
 router.post("/logout", userController.logout.bind(userController));
@@ -22,6 +33,6 @@ router.get("/github", userController.loginGitHub);
 router.get("/githubcallback", userController.loginGitHubCallback);
 
 //Admin
-router.get("/admin", userController.admin);
+router.get("/admin", passport.authenticate("local"), userController.admin);
 
 module.exports = router;
