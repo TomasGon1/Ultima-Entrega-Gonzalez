@@ -28,8 +28,8 @@ app.use(errorHandler);
 app.use(
   session({
     secret: "secretCoder",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: mongo_url,
       ttl: 100,

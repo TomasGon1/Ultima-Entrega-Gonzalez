@@ -91,11 +91,11 @@ class UserController {
     res.redirect("/login");
   }
 
-  async loginGitHub(req, res) {
+  async loginGitHub(req, res, next) {
     passport.authenticate("github", { scope: ["user:email"] })(req, res, next);
   }
 
-  async loginGitHubCallback(req, res) {
+  async loginGitHubCallback(req, res, next) {
     passport.authenticate("github", (err, user) => {
       if (err) {
         return next(err);
