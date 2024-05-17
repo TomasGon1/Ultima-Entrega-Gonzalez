@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const CartController = require("../controllers/cart.controller.js");
 const cartController = new CartController();
+const authMiddleware = require("../middleware/authMiddleware.js");
+
+//Middleware
+router.use(authMiddleware);
 
 //Creo carrito
 router.post("/", cartController.newCart);

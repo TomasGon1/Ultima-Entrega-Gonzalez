@@ -69,15 +69,17 @@ const initializePassport = () => {
 
   //Serializar y deserializar
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user._id);
   });
 
   passport.deserializeUser(async (id, done) => {
     try {
-      const user = await UserModel.findById(id);
+      const user = await UserModel.findById({_id: id});
       done(null, user);
     } catch (error) {
       done(error);
     }
   });
 };
+
+module.exports = initializePassport;
