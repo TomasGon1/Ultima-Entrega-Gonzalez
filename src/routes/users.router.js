@@ -18,7 +18,8 @@ router.get("/profile", passport.authenticate("local", {session: false}), userCon
 router.post("/logout", userController.logout.bind(userController));
 
 //Github
-
+router.get("/github", userController.loginGitHub);
+router.get("/githubcallback", userController.loginGitHubCallback);
 
 //Admin
 router.get("/admin", userController.admin);
