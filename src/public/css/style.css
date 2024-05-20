@@ -42,6 +42,7 @@ label {
 input {
   width: 98%;
   font-size: 1.5rem;
+  font-family: "Righteous", sans-serif;
 }
 
 .container-universal {
@@ -163,6 +164,41 @@ input {
   box-shadow: 0 4px 8px black;
 }
 
-.input-style{
+.input-style {
   margin-top: 1rem;
+}
+
+/* Chat */
+.chat-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.message-area {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 0.5px solid black;
+  box-shadow: 0 4px 8px black;
+  border-radius: 5px;
+}
+
+.message-style {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+}
+
+.chat-font {
+  background-color: lightblue;
+  color: black;
+}
+
+#messages {
+  color: black;
+}
+
+#chatBox {
+  margin-top: 0.5rem;
 }

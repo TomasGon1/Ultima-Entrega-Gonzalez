@@ -23,7 +23,7 @@ router.get("/register", viewsController.renderRegister);
 //Vista chat:
 router.get(
   "/chat",
-  authorize(["usuario", "premium"]),
+  //authorize(["usuario", "premium"]),
   viewsController.renderChat
 );
 

@@ -27,7 +27,7 @@ class SocketManager {
 
             socket.on("message", async (data) => {
                 await MessageModel.create(data);
-                const message = await MessageModel.find();
+                const messages = await MessageModel.find();
                 socket.emit("message", messages);
             });
         });
