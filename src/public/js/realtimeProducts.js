@@ -14,8 +14,8 @@ const renderProducts = (products) => {
 
     card.innerHTML = ` 
         <p> ${item.title} </p>
-        <p> ${item.price} </p>
-        <button> Eliminar </button>
+        <p> $${item.price} </p>
+        <button class="own-btn"> Eliminar </button>
         `;
 
     productsContainer.appendChild(card);

@@ -1,8 +1,8 @@
 <h1>Login</h1>
 
-<div class="login-container">
+<div class="container-universal">
   <form action="/api/users/login" method="POST">
-    <div class="login">
+    <div class="inside-container-A">
       <div>
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required />
@@ -12,11 +12,17 @@
         <input type="password" id="password" name="password" required />
       </div>
     </div>
-    <div class="btn-login">
-      <button class="btn-user-A" type="submit">Ingresar</button>
+    <div class="btn-container">
+      <button class="own-btn" type="submit">Ingresar</button>
+    </div>
+
+    <div class="btn-container">
+      <p>¿Olvidate tu contraseña?
+        <a href="/reset-password" class="restore-password">Restablecer Contraseña</a>
+      </p>
     </div>
   </form>
-  <div class="btn-login">
-    <a href="/api/users/github"><button class="btn-user-A"> GitHub </button></a>
+  <div class="btn-container">
+    <a href="/api/users/github"><button class="own-btn"> GitHub </button></a>
   </div>
 </div>

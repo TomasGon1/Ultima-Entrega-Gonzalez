@@ -8,11 +8,11 @@
       <p>Precio: ${{this.product.totalPrice}}</p>
       <button
         onclick="deleteProduct('{{this.cartId}}', '{{this.product._id}}')"
-        class="btn-addCart"
+        class="own-btn"
       >Eliminar</button>
     </div>
   {{/each}}
 </div>
 
-<button onclick="emptyCart('{{cartId}}')" class="btn-addCart">Vaciar Carrito</button>
+<button onclick="emptyCart('{{cartId}}')" class="own-btn">Vaciar Carrito</button>
 <h3>Total: ${{totalBuys}}</h3>

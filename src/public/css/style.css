@@ -1,3 +1,4 @@
+/* Estilos universales */
 * {
   padding: 0;
   margin: 0;
@@ -10,7 +11,8 @@ body {
 }
 
 h1,
-h2 {
+h2,
+.info-RTP {
   text-align: center;
   font-size: 2.5rem;
   color: black;
@@ -31,6 +33,42 @@ p {
   font-weight: bold;
 }
 
+label {
+  color: black;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+input {
+  width: 98%;
+  font-size: 1.5rem;
+}
+
+.container-universal {
+  color: black;
+  font-family: "Righteous", sans-serif;
+  margin-top: 3rem;
+}
+
+.inside-container-A {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-left: 1rem;
+}
+
+.inside-container-B {
+  margin-top: 1rem;
+  margin-left: 1rem;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* Cards */
 .card-conteiner {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -38,7 +76,7 @@ p {
   margin-top: 2rem;
 }
 
-.card {
+.card-products {
   border: 1px solid black;
   border-radius: 2px;
   margin: 10px;
@@ -48,22 +86,7 @@ p {
   background-color: lightgray;
 }
 
-.btn-addCart {
-  margin-top: 0.5rem;
-  border-radius: 2rem;
-  padding: 0.5rem;
-  font-family: "Righteous", sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  transition: all 1s;
-  background-color: lightgrey;
-}
-
-.btn-addCart:hover {
-  color: white;
-  background-color: black;
-}
-
+/* Paginas productos */
 .page-container {
   display: flex;
   flex-direction: row;
@@ -75,7 +98,8 @@ p {
   padding: 5px;
 }
 
-.btn-page {
+/* Mi boton */
+.own-btn {
   margin-top: 0.5rem;
   border-radius: 0.8rem;
   padding: 0.5rem;
@@ -86,75 +110,23 @@ p {
   transition: all 1s;
 }
 
-.btn-page:hover {
+.own-btn:hover {
   color: white;
   background-color: black;
 }
 
-.login-container {
-  color: black;
-  font-family: "Righteous", sans-serif;
-  margin-top: 3rem;
-}
-
-.login {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin-left: 1rem;
-}
-
-.login,
-input {
-  width: 98%;
-  font-size: 1.5rem;
-}
-
-label {
-  color: black;
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-
-.btn-login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1rem;
-}
-
-.btn-user-A {
-  margin-top: 0.5rem;
-  border-radius: 0.8rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  background-color: lightgrey;
+/* Login */
+.restore-password {
+  text-decoration: none;
+  color: darkblue;
   transition: all 1s;
 }
 
-.btn-user-A:hover {
-  color: white;
-  background-color: black;
+.restore-password:hover {
+  color: blue;
 }
 
-.register-container {
-  color: black;
-  font-family: "Righteous", sans-serif;
-  margin-top: 3rem;
-}
-
-.register {
-  margin-top: 1rem;
-  margin-left: 1rem;
-}
-
-.btn-register {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1rem;
-}
-
+/* Perfil */
 .profile-container {
   margin-top: 3rem;
   display: flex;
@@ -174,17 +146,23 @@ label {
   margin-top: 1.5rem;
 }
 
-.btn-user-B {
-  margin-top: 0.5rem;
-  border-radius: 0.8rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  background-color: lightgrey;
-  transition: all 1s;
+/* Real Time Products */
+#product-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 20px;
 }
 
-.btn-user-B:hover {
-  color: white;
-  background-color: black;
+.card {
+  width: 300px;
+  margin-bottom: 20px;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px black;
+}
+
+.input-style{
+  margin-top: 1rem;
 }

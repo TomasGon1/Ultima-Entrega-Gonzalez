@@ -86,13 +86,6 @@ class ViewsController {
     res.render("register");
   }
 
-  /* async renderProfile(req, res) {
-    if (!req.session.login) {
-      return res.redirect("/login");
-    }
-    res.render("profile", { user: req.session.user });
-  } */
-
   async renderRealTimeProducts(req, res) {
     try {
       res.render("realtimeproducts");
@@ -104,6 +97,18 @@ class ViewsController {
 
   async renderChat(req, res) {
     res.render("chat");
+  }
+
+  async renderResetPassword(req, res) {
+    res.render("passwordreset");
+  }
+
+  async renderPasswordChange(req, res) {
+    res.render("passwordchange");
+  }
+
+  async renderConfirmation(req, res) {
+    res.render("sendconfirmation");
   }
 }
 

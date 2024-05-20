@@ -1,23 +1,33 @@
-<h1>Productos en tiempo real</h1>
+<h1>Real Time Products</h1>
+
+<h3 id="role" class="info-RTP">{{role}}</h3>
+<h3 id="email" class="info-RTP">{{email}}</h3>
 
 <div id="product-container"></div>
 
-<h2>Agregar Productos</h2>
+<div class="container-universal">
+  <h2>Agregar Productos</h2>
 
-<form>
-    <input type="text" id="title" placeholder="Titulo">
-    <input type="text" id="description" placeholder="Descripcion">
-    <input type="number" id="price" placeholder="Precio">
-    <input type="text" id="img" value="Sin Imagen">
-    <input type="text" id="code" placeholder="Código">
-    <input type="number" id="stock" placeholder="Stock">
-    <input type="text" id="category" placeholder="Categoria">
-    <select id="status">
+  <form>
+    <div class="inside-container-A">
+      <input class="input-style" type="text" id="title" placeholder="Titulo" />
+      <input class="input-style" type="text" id="description" placeholder="Descripcion" />
+      <input class="input-style" type="number" id="price" placeholder="Precio" />
+      <input class="input-style" type="text" id="img" value="Sin Imagen" disabled />
+      <input class="input-style" type="text" id="code" placeholder="Código" />
+      <input class="input-style" type="number" id="stock" placeholder="Stock" />
+      <input class="input-style" type="text" id="category" placeholder="Categoria" />
+      <select id="status" class="input-style">
         <option value="true"> Activo </option>
         <option value="false"> Inactivo </option>
-    </select>
-    <button type="button" class="btn-page" id="btn-send"> Enviar </button>
-</form>
+      </select>
+    </div>
+
+    <div class="btn-container">
+      <button type="button" class="own-btn" id="btn-send"> Enviar </button>
+    </div>
+  </form>
+</div>
 
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 <script src="js/realtimeProducts.js"></script>

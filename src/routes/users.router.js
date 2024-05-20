@@ -35,4 +35,11 @@ router.get("/githubcallback", userController.loginGitHubCallback);
 //Admin
 router.get("/admin", passport.authenticate("local"), userController.admin);
 
+//Restablecimiento de Contraseña
+router.post("/requestPasswordReset", userController.requestPasswordReset);
+router.post("/reset-password", userController.resetPassword);
+
+//Usuario Premium
+router.put("/premium/:uid", userController.changeRolPremium);
+
 module.exports = router;

@@ -12,6 +12,7 @@ require("./database.js");
 const config = require("./config/config.js");
 const { mongo_url, port, mode_env } = config;
 const addLogger = require("./middleware/errorLogger.js");
+const authMiddleware = require("./middleware/authMiddleware.js");
 
 const routerP = require("./routes/products.router.js");
 const routerC = require("./routes/carts.router.js");
@@ -37,6 +38,7 @@ app.use(
   })
 );
 app.use(addLogger);
+app.use(authMiddleware);
 
 //Passport
 initializePassport();

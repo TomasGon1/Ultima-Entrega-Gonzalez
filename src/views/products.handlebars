@@ -2,12 +2,12 @@
 
 <div class="card-conteiner">
   {{#each products}}
-    <div class="card">
+    <div class="card-products">
       <h2>{{title}}</h2>
       <p>{{description}}</p>
       <p>Price: ${{price}}</p>
       <p>Category: {{category}} </p>
-      <button class="btn-addCart"> Agregar al Carrito </button>
+      <button class="own-btn"> Agregar al Carrito </button>
     </div>
   {{/each}}
 </div>
@@ -15,7 +15,7 @@
 <div class="page-container">
   {{#if hasPrevPage}}
     <a href="/products?page={{prevPage}}"><button
-        class="btn-page"
+        class="own-btn"
       >Ant</button></a>
   {{/if}}
 

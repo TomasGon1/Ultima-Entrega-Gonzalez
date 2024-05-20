@@ -5,6 +5,8 @@ const cartRepository = new CartRepository();
 const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
 const { generateTicketCode, buyTotal } = require("../utils/cartutils.js");
+const EmailManager = require("../services/email.js");
+const emailManager = new EmailManager();
 
 //Custom Errors:
 const { cartInfoError } = require("../services/errors/info.js");
@@ -168,7 +170,13 @@ class CartController {
 
       await cart.save();
 
-      res.status(200).json({ nonAvilableProducts });
+      await emailManager.sendMailBuy(userCart.email, userCart.first_name, ticket._id);
+
+      res.render("checkout", {
+        cliente: userCart.first_name,
+        email: userCart.email,
+        numTicket: ticket._id
+      });
     } catch (error) {
       console.error("Error al procesar la compra:", error);
       res.status(500).json({ error: "Error interno del servidor" });
