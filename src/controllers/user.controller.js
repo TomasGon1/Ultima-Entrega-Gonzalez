@@ -83,13 +83,13 @@ class UserController {
 
   async profile(req, res) {
     try {
-      const isPremium = req.user.role === "premium";
       const userDTO = new UserDTO(
         req.user.first_name,
         req.user.last_name,
         req.user.role
       );
       const isAdmin = req.user.role === "admin";
+      const isPremium = req.user.role === "premium";
       res.render("profile", { user: userDTO, isAdmin, isPremium });
     } catch (error) {
       console.error(error);

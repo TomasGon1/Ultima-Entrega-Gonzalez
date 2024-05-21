@@ -36,7 +36,7 @@ router.get(
 
 //Restablecimiento de Contraseña
 router.get("/reset-password", viewsController.renderResetPassword);
-router.get("/passowrd", viewsController.renderPasswordChange);
+router.get("/password", viewsController.renderPasswordChange);
 router.get("/confirmacion-envio", viewsController.renderConfirmation);
 
 module.exports = router;
