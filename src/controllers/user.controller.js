@@ -112,7 +112,7 @@ class UserController {
         return next(err);
       }
       if (!user) {
-        return res.redirect("/login");
+        return res.redirect("/api/users/login");
       }
       req.logIn(user, (err) => {
         if (err) {
