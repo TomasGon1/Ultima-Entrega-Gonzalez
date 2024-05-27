@@ -1,0 +1,118 @@
+paths:
+  /cart:
+    post:
+      summary: "Crear carrito"
+      responses:
+        200:
+          description: "Operacion exitosa"
+          schema:
+            $ref: "#/definitions/Cart"
+        500:
+          description: "Error inteno del servidor"
+    get:
+      summary: "Obtener carritos"
+      responses:
+        200:
+          description: "Operacion exitosa"
+          schema:
+            $ref: "#/definitions/Cart"
+        500:
+          description: "Error inteno del servidor"
+  /cart/{cid}:
+    get:
+      summary: "obtener carrito por ID"
+      parameters:
+        - name: "cid"
+          in: "path"
+          description: "ID del carrito que se quiere obtener"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Operacion exitosa"
+          schema:
+            $ref: "#/definitions/Cart"
+        404:
+          description: "Carrito no encontrado"
+        500:
+          description: "Error inteno del servidor"
+    put:
+      summary: "Actualizar carrito"
+      parameters:
+        - name: "cid"
+          in: "path"
+          description: "ID del carrito a actualizar"
+          required: true
+          type: "string"
+        - name: "body"
+          in: "body"
+          description: "Objeto del carrito"
+          required: true
+          schema:
+            $ref: "#/definitions/Cart"
+      responses:
+        200:
+          description: "Operacion exitosa"
+          schema:
+            $ref: "#/definitions/Cart"
+        500:
+          description: "Error inteno del servidor"
+  /cart/{cid}/product/{pid}:
+    post:
+      summary: "Agregar producto al carrito"
+      parameters:
+        - name: "cid"
+          in: "path"
+          description: "ID del producto que se quiere agregar"
+          required: true
+          type: "string"
+        - name: "pid"
+          in: "path"
+          description: "ID del producto"
+          required: true
+          type: "string"
+        - name: "quantity"
+          in: "body"
+          description: "Cantidad de producto que se quiere agregar (default: 1)"
+          required: false
+          type: "integer"
+      responses:
+        200:
+          description: "Operacion exitosa"
+        500:
+          description: "Error inteno del servidor"
+    delete:
+      summary: "Eliminar producto del carrito"
+      parameters:
+        - name: "cid"
+          in: "path"
+          description: "ID del producto a eliminar"
+          required: true
+          type: "string"
+        - name: "pid"
+          in: "path"
+          description: "ID del producto"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Operacion exitosa"
+        500:
+          description: "Error inteno del servidor"
+definitions:
+  Cart:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      products:
+        type: "array"
+        items:
+          $ref: "#/definitions/Product"
+  Product:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      quantity:
+        type: "integer"

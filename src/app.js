@@ -10,7 +10,7 @@ const errorHandler = require("./middleware/error.js");
 require("./database.js");
 
 const config = require("./config/config.js");
-const { mongo_url, port, mode_env} = config;
+const { mongo_url, port, mode_env } = config;
 const addLogger = require("./middleware/errorLogger.js");
 const authMiddleware = require("./middleware/authMiddleware.js");
 
@@ -19,6 +19,10 @@ const routerC = require("./routes/carts.router.js");
 const routerU = require("./routes/users.router.js");
 const routerV = require("./routes/views.router.js");
 const routerDev = require("./routes/dev.router.js");
+
+//swagger
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUiExpress = require("swagger-ui-express");
 
 //Middlewares
 app.use(express.urlencoded({ extended: true }));
@@ -59,11 +63,28 @@ app.use("/", routerV);
 //Pruebas dev
 app.use("/", routerDev);
 
+//Configuracion Swagger
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "Documentacion de KeysGamers",
+      description:
+        "Web dedicada a compra y venta de Keys de videojuegos para Steam",
+    },
+  },
+  apis: ["./src/docs/**/*.yaml"],
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
+
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
 //Listen
 const httpServer = app.listen(port, () => {
   console.log(`Escuchando en el puerto: ${port} en modo ${config.mode_env}`);
 });
 
-//Websockets: 
+//Websockets:
 const SocketManager = require("./sockets/socketmanager.js");
 new SocketManager(httpServer);

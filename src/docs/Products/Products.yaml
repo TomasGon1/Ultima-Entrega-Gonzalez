@@ -1,0 +1,144 @@
+paths:
+  /products:
+    post:
+      summary: "Agregar nuevo producto"
+      responses:
+        200:
+          description: "Operacion exitosa"
+          schema:
+            $ref: "#/definitions/Product"
+        500:
+          description: "Error interno del servidor"
+    get:
+      summary: "Obtener todos los productos"
+      parameters:
+        - name: "limit"
+          in: "query"
+          description: "Limite de productos por pagina"
+          required: false
+          type: "integer"
+        - name: "page"
+          in: "query"
+          description: "Numero de pagina"
+          required: false
+          type: "integer"
+        - name: "sort"
+          in: "query"
+          description: "Orden"
+          required: false
+          type: "string"
+        - name: "query"
+          in: "query"
+          description: "Query de busqueda"
+          required: false
+          type: "string"
+      responses:
+        200:
+          description: "Operacion exitosa"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+              payload:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Product"
+              totalPages:
+                type: "integer"
+              prevPage:
+                type: "integer"
+              nextPage:
+                type: "integer"
+              page:
+                type: "integer"
+              hasPrevPage:
+                type: "boolean"
+              hasNextPage:
+                type: "boolean"
+              prevLink:
+                type: "string"
+              nextLink:
+                type: "string"
+        500:
+          description: "Error interno del servidor"
+  /products/{pid}:
+    get:
+      summary: "Obtener producto por ID"
+      parameters:
+        - name: "pid"
+          in: "path"
+          description: "ID del producto que se quiere obtener"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Operacion exitosa"
+          schema:
+            $ref: "#/definitions/Product"
+        404:
+          description: "Producto no encontrado"
+        500:
+          description: "Error interno del servidor"
+    put:
+      summary: "Actualizar producto"
+      parameters:
+        - name: "pid"
+          in: "path"
+          description: "ID del producto a actualizar"
+          required: true
+          type: "string"
+        - name: "body"
+          in: "body"
+          description: "Objeto"
+          required: true
+          schema:
+            $ref: "#/definitions/Product"
+      responses:
+        200:
+          description: "Operacion exitosa"
+          schema:
+            $ref: "#/definitions/Product"
+        500:
+          description: "Error interno del servidor"
+    delete:
+      summary: "Eliminar producto por ID"
+      parameters:
+        - name: "pid"
+          in: "path"
+          description: "ID del producto a eliminar"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Operacion exitosa"
+        500:
+          description: "Error interno del servidor"
+definitions:
+  Product:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      title:
+        type: "string"
+      description:
+        type: "string"
+      price:
+        type: "number"
+      img:
+        type: "string"
+      code:
+        type: "string"
+      stock:
+        type: "integer"
+      category:
+        type: "string"
+      status:
+        type: "boolean"
+      thumbnails:
+        type: "array"
+        items:
+          type: "string"
+      owner:
+        type: "string"
