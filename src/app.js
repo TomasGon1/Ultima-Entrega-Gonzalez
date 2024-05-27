@@ -10,7 +10,7 @@ const errorHandler = require("./middleware/error.js");
 require("./database.js");
 
 const config = require("./config/config.js");
-const { mongo_url, port, mode_env } = config;
+const { mongo_url, port, mode_env} = config;
 const addLogger = require("./middleware/errorLogger.js");
 const authMiddleware = require("./middleware/authMiddleware.js");
 
@@ -18,7 +18,7 @@ const routerP = require("./routes/products.router.js");
 const routerC = require("./routes/carts.router.js");
 const routerU = require("./routes/users.router.js");
 const routerV = require("./routes/views.router.js");
-const routerMock = require("./routes/mocking.router.js");
+const routerDev = require("./routes/dev.router.js");
 
 //Middlewares
 app.use(express.urlencoded({ extended: true }));
@@ -57,20 +57,11 @@ app.use("/api/users", routerU);
 app.use("/", routerV);
 
 //Pruebas dev
-app.use("/", routerMock);
-app.use("/loggertest", (req, res) => {
-  req.logger.fatal("Error fatal!!")
-  req.logger.error("Error grave!!");
-  req.logger.warning("Esto es un warning!");
-  req.logger.info("Esto es solo informacion!");
-  req.logger.debug("Esto es un debug!");
-  console.log(config.mode_env);
-  res.send("Test de logs");
-})
+app.use("/", routerDev);
 
 //Listen
 const httpServer = app.listen(port, () => {
-  console.log(`Escuchando en el puerto: ${port}`);
+  console.log(`Escuchando en el puerto: ${port} en modo ${config.mode_env}`);
 });
 
 //Websockets: 
