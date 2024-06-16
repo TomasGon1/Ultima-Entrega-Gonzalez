@@ -3,6 +3,8 @@ const UserModel = require("../models/user.model.js");
 const CartModel = require("../models/cart.model.js");
 const passport = require("passport");
 const { createHash, isValidPassword } = require("../utils/hashbcrypt.js");
+const UserRepository = require("../repositories/user.repository.js");
+const userRepository = new UserRepository();
 
 //Errores custom
 const {
@@ -21,7 +23,7 @@ class UserController {
   async register(req, res) {
     const { first_name, last_name, email, password, age } = req.body;
     try {
-      const existingUser = await UserModel.findOne({ email });
+      const existingUser = await userRepository.findByEmail(email);
       if (existingUser) {
         throw CustomError.createError({
           name: "Register fail",
@@ -42,7 +44,7 @@ class UserController {
         password: createHash(password),
         age,
       });
-      await newUser.save();
+      await userRepository.create(newUser);
 
       res.redirect("/api/users/profile");
     } catch (error) {
@@ -54,7 +56,7 @@ class UserController {
   async login(req, res) {
     const { email, password } = req.body;
     try {
-      const userFound = await UserModel.findOne({ email });
+      const userFound = await userRepository.findByEmail(email);
       if (!userFound) {
         throw CustomError.createError({
           name: "Login fail",
@@ -73,6 +75,9 @@ class UserController {
           code: EErrors.USER_IVALID,
         });
       }
+
+      userFound.last_connection = new Date();
+      await userFound.save();
 
       res.redirect("/api/users/profile");
     } catch (error) {
@@ -98,6 +103,17 @@ class UserController {
   }
 
   async logout(req, res) {
+    if (req.user) {
+      try {
+        req.user.last_connection = new Date();
+        await req.user.save();
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error Interno del servidor");
+        return;
+      }
+    }
+
     req.logout();
     res.redirect("/login");
   }
@@ -134,7 +150,7 @@ class UserController {
     const { email } = req.body;
 
     try {
-      const user = await UserModel.findOne({ email });
+      const user = await userRepository.findByEmail(email);
       if (!user) {
         return res.status(404).send("Usuario no encontrado");
       }
@@ -145,7 +161,7 @@ class UserController {
         token: token,
         expiresAt: new Date(Date.now() + 3600000),
       };
-      await user.save();
+      await userRepository.save(user);
 
       await emailManager.restorePassword(email, user.first_name, token);
 
@@ -160,7 +176,7 @@ class UserController {
     const { email, password, token } = req.body;
 
     try {
-      const user = await UserModel.findOne({ email });
+      const user = await userRepository.findByEmail(email);
       if (!user) {
         return res.render("passwordchange", { error: "Usuario no encontrado" });
       }
@@ -202,18 +218,34 @@ class UserController {
     try {
       const { uid } = req.params;
 
-      const user = await UserModel.findById(uid);
+      const user = await userRepository.findById(uid);
       if (!user) {
         return res.status(404).json({ message: "Usuario no encontrado" });
       }
 
+      const requiredDocuments = [
+        "Identificación",
+        "Comprobante de domicilio",
+        "Comprobante de estado de cuenta",
+      ];
+      const userDocuments = user.documents.map((doc) => doc.name);
+
+      const hasRequiredDocuments = requiredDocuments.every((doc) =>
+        userDocuments.includes(doc)
+      );
+
+      if (!hasRequiredDocuments) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "El usuario debe cargar los siguientes documentos: Identificación, Comprobante de domicilio, Comprobante de estado de cuenta",
+          });
+      }
+
       const newRol = user.role === "usuario" ? "premium" : "usuario";
 
-      const updatedRol = await UserModel.findByIdAndUpdate(
-        uid,
-        { role: newRol },
-        { new: true }
-      );
+      const updatedRol = await userRepository.updateUserRole(uid, newRol);
       res.json(updatedRol);
     } catch (error) {
       console.error(error);

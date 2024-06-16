@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const initializePassport = require("./config/passport.config.js");
 const errorHandler = require("./middleware/error.js");
+const cors = require("cors");
 require("./database.js");
 
 const config = require("./config/config.js");
@@ -43,6 +44,7 @@ app.use(
 );
 app.use(addLogger);
 app.use(authMiddleware);
+app.use(cors());
 
 //Passport
 initializePassport();

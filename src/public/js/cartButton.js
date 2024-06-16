@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 function deleteProduct(cartId, productId) {
   fetch(`/api/carts/${cartId}/product/${productId}`, {
     method: "DELETE",
