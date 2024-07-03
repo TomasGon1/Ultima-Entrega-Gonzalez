@@ -7,7 +7,7 @@ const authorize = require("../middleware/checkrole.js");
 //Vista de productos:
 router.get(
   "/products",
-  //authorize(["usuario", "premium"]),
+  authorize(["usuario", "premium"]),
   viewsController.renderProducts
 );
 
@@ -40,9 +40,9 @@ router.get("/password", viewsController.renderPasswordChange);
 router.get("/confirmacion-envio", viewsController.renderConfirmation);
 
 //Panel usuario premium
-router.get("/panel-premium", viewsController.renderPanelPremium);
+router.get("/panel-premium", authorize(["premium"]), viewsController.renderPanelPremium);
 
 //Obtengo todos los usuarios
-router.get("/all-users", viewsController.renderAllUser);
+router.get("/all-users", authorize(["usuario", "premium", "admin"]), viewsController.renderAllUser);
 
 module.exports = router;
