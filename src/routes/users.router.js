@@ -98,4 +98,7 @@ router.post(
   }
 );
 
+//Obtengo todos los usuarios
+router.get("/all-users", userController.getAllUsers);
+
 module.exports = router;

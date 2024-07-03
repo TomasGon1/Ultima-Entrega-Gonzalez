@@ -1,0 +1,12 @@
+<h1>Lista de usuarios registrados</h1>
+
+<div class="card-container">
+  {{#each users}}
+    <div class="card-products">
+      <h2>{{first_name}} {{last_name}}</h2>
+      <p>Email: {{email}}</p>
+      <p>Rol: {{role}} </p>
+      <p>Ultima conexion: {{last_connection}}</p>
+    </div>
+  {{/each}}
+</div>

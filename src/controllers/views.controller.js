@@ -1,4 +1,5 @@
 const ProductModel = require("../models/product.model.js");
+const UserModel =require("../models/user.model.js");
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
 
@@ -113,6 +114,21 @@ class ViewsController {
 
   async renderPanelPremium(req, res) {
     res.render("panel-premium");
+  }
+
+  async renderAllUser(req, res) {
+    try {
+      const users = await UserModel.find();
+
+      const newArray = users.map((user) => {
+        const {_id, ...rest} = user.toObject();
+        return {id: _id, ...rest};
+      });
+
+      res.render("all-users", {users: newArray})
+    } catch (error) {
+      
+    }
   }
 }
 
