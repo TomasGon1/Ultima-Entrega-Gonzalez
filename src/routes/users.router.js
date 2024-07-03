@@ -7,6 +7,7 @@ const userController = new UserController();
 const upload = require("../middleware/multer.js");
 const UserRepository = require("../repositories/user.repository.js");
 const userRepository = new UserRepository();
+const authorize = require("../middleware/checkrole.js");
 
 //Registro
 router.post(
@@ -36,21 +37,21 @@ router.get("/github", userController.loginGitHub);
 router.get("/githubcallback", userController.loginGitHubCallback);
 
 //Admin
-router.get("/admin", passport.authenticate("local"), userController.admin);
+router.get("/admin", passport.authenticate("local"), authorize(["admin"]),userController.admin);
 
 //Restablecimiento de Contraseña
 router.post("/requestPasswordReset", userController.requestPasswordReset);
 router.post("/reset-password", userController.resetPassword);
 
 //Usuario Premium
-router.put("/premium/:uid", userController.changeRolPremium);
+router.put("/premium/:uid", authorize(["premium"]), userController.changeRolPremium);
 router.post(
   "/:uid/documents",
   upload.fields([
     { name: "document" },
     { name: "products" },
     { name: "profile" },
-  ]),
+  ]), authorize(["premium"]),
   async (req, res) => {
     const { uid } = req.params;
     const uploadedDocuments = req.files;

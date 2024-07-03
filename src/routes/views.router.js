@@ -40,6 +40,6 @@ router.get("/password", viewsController.renderPasswordChange);
 router.get("/confirmacion-envio", viewsController.renderConfirmation);
 
 //Panel usuario premium
-router.get("/panel-premium", viewsController.renderPanelPremium);
+router.get("/panel-premium", authorize(["premium"]), viewsController.renderPanelPremium);
 
 module.exports = router;
