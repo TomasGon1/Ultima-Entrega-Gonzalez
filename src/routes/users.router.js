@@ -44,14 +44,14 @@ router.post("/requestPasswordReset", userController.requestPasswordReset);
 router.post("/reset-password", userController.resetPassword);
 
 //Usuario Premium
-router.put("/premium/:uid", authorize(["admin"]), userController.changeRolPremium);
+router.put("/premium/:uid", authorize(["premium"]), userController.changeRolPremium);
 router.post(
   "/:uid/documents",
   upload.fields([
     { name: "document" },
     { name: "products" },
     { name: "profile" },
-  ]), authorize(["admin"]),
+  ]), authorize(["premium"]),
   async (req, res) => {
     const { uid } = req.params;
     const uploadedDocuments = req.files;
