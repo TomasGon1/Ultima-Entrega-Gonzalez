@@ -1,4 +1,5 @@
 const ProductModel = require("../models/product.model.js");
+const UserModel = require("../models/user.model.js");
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
 
@@ -113,6 +114,29 @@ class ViewsController {
 
   async renderPanelPremium(req, res) {
     res.render("panel-premium");
+  }
+
+  async renderAllUser(req, res) {
+    try {
+      const users = await UserModel.find();
+
+      const usersData = users.map((user) => {
+        const {_id, first_name, last_name, email, role, last_connection} = user;
+        return {
+          id: _id,
+          first_name,
+          last_name,
+          email,
+          role,
+          last_connection,
+        };
+      });
+
+      res.render("all-users", {users: usersData});
+    } catch (error) {
+      console.log("error al obtener los usuarios:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 }
 

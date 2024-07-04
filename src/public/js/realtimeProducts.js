@@ -15,6 +15,7 @@ const renderProducts = (products) => {
     card.innerHTML = ` 
         <p> ${item.title} </p>
         <p> $${item.price} </p>
+        <p> Subido: ${item.owner} </p>
         <button class="own-btn"> Eliminar </button>
         `;
 

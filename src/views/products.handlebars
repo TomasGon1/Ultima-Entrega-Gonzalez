@@ -1,12 +1,13 @@
 <h1> Productos </h1>
 
-<div class="card-conteiner">
+<div class="card-container">
   {{#each products}}
     <div class="card-products">
       <h2>{{title}}</h2>
       <p>{{description}}</p>
-      <p>Price: ${{price}}</p>
-      <p>Category: {{category}} </p>
+      <p>Precio: ${{price}}</p>
+      <p>Categoria: {{category}} </p>
+      <p>Subido por: {{owner}}</p>
       <button class="own-btn"> Agregar al Carrito </button>
     </div>
   {{/each}}

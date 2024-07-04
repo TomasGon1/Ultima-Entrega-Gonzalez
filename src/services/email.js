@@ -53,6 +53,30 @@ class EmailManager {
       throw new Error("Error al enviar correro electronico");
     }
   }
+
+  async sendMailInactiveUser(email, first_name) {
+    try {
+      const mailOpts = {
+        from: "xnicksyux@gmail.com",
+        to: email,
+        subject: "Su cuenta a sido eliminada por inactividad",
+        html: `
+          <h1>Su cuenta ha sido eliminada</h1>
+          <p>Hola ${first_name}!</p>
+          <p>Lamentamos informarte que tu cuenta ha sido eliminada debido a inactividad durante los últimos 2 días.</p>
+          <p>Si deseas recuperar tu cuenta, puedes hacerlo creando una nueva <a href="http://localhost:8080/register">AQUI!</a></p>
+          <p>Atentamente,</p>
+          <p>Soporte de KeysGamers</p>
+        `,
+      };
+
+      await this.transporter.sendMail(mailOpts);
+    } catch (error) {
+      console.error("Error al enviar correo: ", error);
+      throw new Error("Error al enviar correro electronico");
+    }
+  }
+
 }
 
 module.exports = EmailManager;

@@ -37,7 +37,7 @@ router.get("/github", userController.loginGitHub);
 router.get("/githubcallback", userController.loginGitHubCallback);
 
 //Admin
-router.get("/admin", passport.authenticate("local"), authorize(["admin"]),userController.admin);
+router.get("/admin", passport.authenticate("local"), authorize(["admin"]), userController.admin);
 
 //Restablecimiento de Contraseña
 router.post("/requestPasswordReset", userController.requestPasswordReset);
@@ -98,5 +98,11 @@ router.post(
     }
   }
 );
+
+//Obtengo todos los usuarios
+router.get("/all-users", authorize(["user", "premium"]), userController.getAllUsers);
+
+//Eliminar usuarios inactivos
+router.delete("/delete/:uid", authorize(["admin"]), userController.deleteInactiveUser);
 
 module.exports = router;

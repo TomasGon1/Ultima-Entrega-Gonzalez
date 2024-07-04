@@ -24,9 +24,14 @@ const productInfoError = (productId) => {
   return `Error al encontrar un producto con el ID: ${productId.product}, por favor intente con otro producto`;
 };
 
+const allUsersError = () => {
+  return `Error al intentar obtener todos los usuarios registrados, intentelo mas tarde`;
+}
+
 module.exports = {
     registerInfoError,
     loginInfoError,
     cartInfoError,
-    productInfoError
+    productInfoError,
+    allUsersError
 }

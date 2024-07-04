@@ -10,6 +10,7 @@ const userRepository = new UserRepository();
 const {
   registerInfoError,
   loginInfoError,
+  allUsersError,
 } = require("../services/errors/info.js");
 const { EErrors } = require("../services/errors/enums.js");
 const CustomError = require("../services/errors/custom-error.js");
@@ -235,18 +236,56 @@ class UserController {
       );
 
       if (!hasRequiredDocuments) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "El usuario debe cargar los siguientes documentos: Identificación, Comprobante de domicilio, Comprobante de estado de cuenta",
-          });
+        return res.status(400).json({
+          message:
+            "El usuario debe cargar los siguientes documentos: Identificación, Comprobante de domicilio, Comprobante de estado de cuenta",
+        });
       }
 
       const newRol = user.role === "usuario" ? "premium" : "usuario";
 
       const updatedRol = await userRepository.updateUserRole(uid, newRol);
       res.json(updatedRol);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
+    }
+  }
+
+  async getAllUsers(req, res) {
+    try {
+      const users = await UserModel.find(
+        {},
+        { first_name: 1, last_name: 1, email: 1, role: 1, last_connection: 1 }
+      );
+
+      if (!users) {
+        throw CustomError.createError({
+          name: "Get all users fail",
+          cause: allUsersError(),
+          message: "Error al obtener todos los usuarios",
+          code: EErrors.USER_IVALID,
+        });
+      }
+
+      res.json({ status: "success", payload: users });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
+    }
+  }
+
+  async deleteInactiveUser(req, res) {
+    try {
+      const inactiveUsers = await UserModel.find({ last_connection: { $lt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)}});
+
+      inactiveUsers.forEach(async (user) => {
+        await emailManager.sendMailInactiveUser(user.email, user.first_name);
+
+        await UserModel.findByIdAndDelete(user._id);
+      });
+
+      res.status(200).send({message: "Usuarios inactivos eliminados correctamente"});
     } catch (error) {
       console.error(error);
       res.status(500).send("Error interno del servidor");
