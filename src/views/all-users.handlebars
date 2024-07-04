@@ -1,12 +1,26 @@
 <h1>Lista de usuarios registrados</h1>
 
-<div class="card-container">
+<div id="usersList" class="card-container">
   {{#each users}}
     <div class="card-products">
+      <p>ID: {{id}}</p>
       <h2>{{first_name}} {{last_name}}</h2>
       <p>Email: {{email}}</p>
       <p>Rol: {{role}} </p>
       <p>Ultima conexion: {{last_connection}}</p>
+
+      <select id="role-{{id}}" class="role-select select-style" data-user-id="{{id}}">
+        <option value="user">Usuario</option>
+        <option value="premium">Premium</option>
+      </select>
+
+      <div class="btn-container">
+        <button class="btn-edit own-btn" data-user-id="{{id}}"> Editar </button>
+        <button class="btn-delete own-btn" data-user-id="{{id}}"> Eliminar </button>
+      </div>
     </div>
   {{/each}}
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/allUsers.js"></script>

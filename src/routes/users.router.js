@@ -100,6 +100,9 @@ router.post(
 );
 
 //Obtengo todos los usuarios
-router.get("/all-users", authorize(["user", "premium", "admin"]), userController.getAllUsers);
+router.get("/all-users", authorize(["user", "premium"]), userController.getAllUsers);
+
+//Eliminar usuarios inactivos
+router.delete("/delete/:uid", authorize(["admin"]), userController.deleteInactiveUser);
 
 module.exports = router;

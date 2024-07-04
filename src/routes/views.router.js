@@ -30,7 +30,7 @@ router.get(
 //Vista real time products:
 router.get(
   "/realtimeproducts",
-  authorize(["admin", "premium"]),
+  authorize(["admin"]),
   viewsController.renderRealTimeProducts
 );
 
@@ -40,9 +40,13 @@ router.get("/password", viewsController.renderPasswordChange);
 router.get("/confirmacion-envio", viewsController.renderConfirmation);
 
 //Panel usuario premium
-router.get("/panel-premium", authorize(["premium"]), viewsController.renderPanelPremium);
+router.get(
+  "/panel-premium",
+  authorize(["premium"]),
+  viewsController.renderPanelPremium
+);
 
 //Obtengo todos los usuarios
-router.get("/all-users", authorize(["usuario", "premium", "admin"]), viewsController.renderAllUser);
+router.get("/all-users", authorize(["admin"]), viewsController.renderAllUser);
 
 module.exports = router;

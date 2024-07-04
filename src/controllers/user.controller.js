@@ -274,6 +274,23 @@ class UserController {
       res.status(500).send("Error interno del servidor");
     }
   }
+
+  async deleteInactiveUser(req, res) {
+    try {
+      const inactiveUsers = await UserModel.find({ last_connection: { $lt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)}});
+
+      inactiveUsers.forEach(async (user) => {
+        await emailManager.sendMailInactiveUser(user.email, user.first_name);
+
+        await UserModel.findByIdAndDelete(user._id);
+      });
+
+      res.status(200).send({message: "Usuarios inactivos eliminados correctamente"});
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
+    }
+  }
 }
 
 module.exports = UserController;
