@@ -1,4 +1,3 @@
-const UserDTO = require("../dto/user.dto.js");
 const UserModel = require("../models/user.model.js");
 const CartModel = require("../models/cart.model.js");
 const passport = require("passport");
@@ -47,7 +46,7 @@ class UserController {
       });
       await userRepository.create(newUser);
 
-      res.redirect("/api/users/profile");
+      res.redirect("/login");
     } catch (error) {
       console.error(error);
       res.status(500).send("Error interno del servidor");
@@ -80,23 +79,7 @@ class UserController {
       userFound.last_connection = new Date();
       await userFound.save();
 
-      res.redirect("/api/users/profile");
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Error interno del servidor");
-    }
-  }
-
-  async profile(req, res) {
-    try {
-      const userDTO = new UserDTO(
-        req.user.first_name,
-        req.user.last_name,
-        req.user.role
-      );
-      const isAdmin = req.user.role === "admin";
-      const isPremium = req.user.role === "premium";
-      res.render("profile", { user: userDTO, isAdmin, isPremium });
+      res.redirect("/profile");
     } catch (error) {
       console.error(error);
       res.status(500).send("Error interno del servidor");

@@ -3,6 +3,7 @@ const router = express.Router();
 const ViewsController = require("../controllers/views.controller.js");
 const viewsController = new ViewsController();
 const authorize = require("../middleware/checkrole.js");
+const passport = require("passport");
 
 //Vista de productos:
 router.get(
@@ -48,5 +49,8 @@ router.get(
 
 //Obtengo todos los usuarios
 router.get("/all-users", authorize(["admin"]), viewsController.renderAllUser);
+
+//Perfil
+router.get("/profile", viewsController.profile);
 
 module.exports = router;

@@ -1,7 +1,9 @@
+const UserDTO = require("../dto/user.dto.js");
 const ProductModel = require("../models/product.model.js");
 const UserModel = require("../models/user.model.js");
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
+
 
 class ViewsController {
   async renderProducts(req, res) {
@@ -136,6 +138,22 @@ class ViewsController {
     } catch (error) {
       console.log("error al obtener los usuarios:", error);
       res.status(500).json({ error: "Error interno del servidor" });
+    }
+  }
+
+  async profile(req, res) {
+    try {
+      const userDTO = new UserDTO(
+        req.user.first_name,
+        req.user.last_name,
+        req.user.role
+      );
+      const isAdmin = req.user.role === "admin";
+      const isPremium = req.user.role === "premium";
+      res.render("profile", { user: userDTO, isAdmin, isPremium });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
     }
   }
 }

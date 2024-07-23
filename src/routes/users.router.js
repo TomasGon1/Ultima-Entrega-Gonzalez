@@ -12,22 +12,17 @@ const authorize = require("../middleware/checkrole.js");
 //Registro
 router.post(
   "/register",
-  passport.authenticate("local"),
   userController.register
 );
 
 //Login
 router.post(
   "/login",
-  passport.authenticate("local", {
-    successRedirect: "/profile",
-    failureRedirect: "/login",
-  }),
+  /* passport.authenticate("local"), */
   userController.login
 );
 
-//Perfil
-router.get("/profile", passport.authenticate("local"), userController.profile);
+
 
 //Logout
 router.post("/logout", userController.logout.bind(userController));
