@@ -3,11 +3,29 @@
 <div class="profile-container">
   <div>
     <h2 class="greeting">Bienvenido!
-      {{user.first_name}}
-      {{user.last_name}}!</h2>
+      {{user.nombre}}
+      {{user.apellido}}!</h2>
     <p class="profile-info">Email: {{user.email}}</p>
     <p class="profile-info">Edad: {{user.age}}</p>
+    <p class="profile-info">Rol: {{user.role}}</p>
   </div>
+
+  <div class="btn-profile">
+    {{#if this.isAdmin}}
+      <a href="/realtimeproducts"><button class="own-btn">Modificar Productos</button></a>
+    {{else}}
+      {{#if this.isPremium}}
+          <a href="/panel-premium"><button class="own-btn">Tu Panel</button></a>
+          <a href="/chat"><button class="own-btn">Chat en vivo</button></a>
+          <a href="/products"><button class="own-btn">Tienda</button></a>
+      {{else}}
+        <a href="/chat"><button class="own-btn">Chat en vivo</button></a>
+        <a href="/products"><button class="own-btn">Tienda</button></a>
+      {{/if}}    
+    {{/if}}
+    
+  </div>
+
   <div class="btn-profile">
     <a href="/api/users/logout"><button class="own-btn">Cerrar Sesión</button></a>
   </div>

@@ -143,14 +143,20 @@ class ViewsController {
 
   async profile(req, res) {
     try {
+      const userData = req.user;
+      if(!userData || !userData.first_name || !userData.last_name || !userData.role) {
+        //return res.status(400).json({ error: 'Datos de usuario incompletos' });
+        console.log(userData);
+      }
+      const isPremium = userData.role === "premium";
       const userDTO = new UserDTO(
-        req.user.first_name,
-        req.user.last_name,
-        req.user.role
+        userData.first_name,
+        userData.last_name,
+        userData.role
       );
-      const isAdmin = req.user.role === "admin";
-      const isPremium = req.user.role === "premium";
-      res.render("profile", { user: userDTO, isAdmin, isPremium });
+      const isAdmin = userData.role === "admin";
+      
+      res.render("profile", { user: userDTO, isPremium, isAdmin });
     } catch (error) {
       console.error(error);
       res.status(500).send("Error interno del servidor");
