@@ -41,7 +41,8 @@ label {
   font-weight: bold;
 }
 
-input, textarea {
+input,
+textarea {
   width: 98%;
   font-size: 1.5rem;
   font-family: "Righteous", sans-serif;
@@ -117,6 +118,7 @@ input, textarea {
   font-weight: bold;
   background-color: lightgrey;
   transition: all 1s;
+  margin-right: 1rem;
 }
 
 .own-btn:hover {

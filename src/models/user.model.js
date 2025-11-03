@@ -1,13 +1,19 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+  oauth: {
+    type: Boolean,
+    default: false
+  },
   first_name: {
     type: String,
     required: true,
   },
   last_name: {
     type: String,
-    required: true,
+    required: function() {
+      return !this.oauth;
+    },
   },
   email: {
     type: String,
@@ -17,7 +23,9 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    //required: true,
+    required: function() {
+      return !this.oauth;
+    },
   },
   age: {
     type: Number,

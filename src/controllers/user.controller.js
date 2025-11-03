@@ -5,10 +5,12 @@ const { createHash, isValidPassword } = require("../utils/hashbcrypt.js");
 const UserRepository = require("../repositories/user.repository.js");
 const userRepository = new UserRepository();
 
+//Middleware
+const assignCartToUser = require("../middleware/assignCart.js");
+
 //Errores custom
 const {
   registerInfoError,
-  loginInfoError,
   allUsersError,
 } = require("../services/errors/info.js");
 const { EErrors } = require("../services/errors/enums.js");
@@ -58,26 +60,29 @@ class UserController {
     try {
       const userFound = await userRepository.findByEmail(email);
       if (!userFound) {
-        throw CustomError.createError({
-          name: "Login fail",
-          cause: loginInfoError({ email, password }),
-          message: "Error al intentar logearse, usuario invalido!",
-          code: EErrors.USER_IVALID,
-        });
+        return res.status(400).send("Usuario no encontrado");
       }
 
       const isValid = isValidPassword(password, userFound);
       if (!isValid) {
-        throw CustomError.createError({
-          name: "Login fail",
-          cause: loginInfoError({ email, password }),
-          message: "Error al intentar logearse, contraseña invalida!",
-          code: EErrors.USER_IVALID,
-        });
+        return res.status(400).send("Contraseña incorrecta");
       }
 
       userFound.last_connection = new Date();
+
+      await assignCartToUser(userFound);
+
       await userFound.save();
+
+      req.session.user = {
+        id: userFound._id,
+        first_name: userFound.first_name,
+        last_name: userFound.last_name,
+        email: userFound.email,
+        age: userFound.age,
+        role: userFound.role,
+        cart: userFound.cart,
+      };
 
       res.redirect("/profile");
     } catch (error) {
@@ -87,19 +92,26 @@ class UserController {
   }
 
   async logout(req, res) {
-    if (req.user) {
-      try {
-        req.user.last_connection = new Date();
-        await req.user.save();
-      } catch (error) {
-        console.error(error);
-        res.status(500).send("Error Interno del servidor");
-        return;
+    try {
+      if (req.session.user) {
+        const userFound = await UserModel.findById(req.session.user.id);
+        if (userFound) {
+          userFound.last_connection = new Date();
+          await userFound.save();
+        }
       }
-    }
 
-    req.logout();
-    res.redirect("/login");
+      req.session.destroy((err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send("Error al cerrar sesion");
+        }
+        res.redirect("/login");
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
+    }
   }
 
   async loginGitHub(req, res, next) {
@@ -108,17 +120,30 @@ class UserController {
 
   async loginGitHubCallback(req, res, next) {
     passport.authenticate("github", (err, user) => {
-      if (err) {
-        return next(err);
-      }
-      if (!user) {
-        return res.redirect("/api/users/login");
-      }
-      req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
+      if (err) return next(err);
+      if (!user) return res.redirect("/api/users/login");
+
+      req.logIn(user, async (err) => {
+        if (err) return next(err);
+
+        try {
+          await assignCartToUser(user);
+
+          req.session.user = {
+            id: user._id,
+            first_name: user.first_name || "GitHubUser",
+            last_name: user.last_name || "",
+            email: user.email,
+            age: user.age || 0,
+            role: user.role || "user",
+            cart: user.cart,
+          };
+
+          return res.redirect("/profile");
+        } catch (error) {
+          console.error("Error al asignar carrito:", error);
+          res.status(500).send("Error interno del servidor");
         }
-        return res.redirect("/api/users/profile");
       });
     })(req, res, next);
   }
@@ -260,7 +285,11 @@ class UserController {
 
   async deleteInactiveUser(req, res) {
     try {
-      const inactiveUsers = await UserModel.find({ last_connection: { $lt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)}});
+      const inactiveUsers = await UserModel.find({
+        last_connection: {
+          $lt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        },
+      });
 
       inactiveUsers.forEach(async (user) => {
         await emailManager.sendMailInactiveUser(user.email, user.first_name);
@@ -268,7 +297,9 @@ class UserController {
         await UserModel.findByIdAndDelete(user._id);
       });
 
-      res.status(200).send({message: "Usuarios inactivos eliminados correctamente"});
+      res
+        .status(200)
+        .send({ message: "Usuarios inactivos eliminados correctamente" });
     } catch (error) {
       console.error(error);
       res.status(500).send("Error interno del servidor");

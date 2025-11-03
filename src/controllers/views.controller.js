@@ -1,3 +1,4 @@
+const { log } = require("winston");
 const UserDTO = require("../dto/user.dto.js");
 const ProductModel = require("../models/product.model.js");
 const UserModel = require("../models/user.model.js");
@@ -44,7 +45,7 @@ class ViewsController {
   async renderCart(req, res) {
     const cartId = req.params.cid;
     try {
-      const cart = await cartRepository.getCartById(id);
+      const cart = await cartRepository.getCartById(cartId);
       if (!cart) {
         console.log("No existe el carrito con ese id");
         return res.status(404).json({ error: "Carrito no encontrado" });
@@ -143,20 +144,32 @@ class ViewsController {
 
   async profile(req, res) {
     try {
-      const userData = req.user;
-      if(!userData || !userData.first_name || !userData.last_name || !userData.role) {
-        //return res.status(400).json({ error: 'Datos de usuario incompletos' });
-        console.log(userData);
+      const userData = req.session.user;
+      if(!userData) {
+        return res.redirect("/login")
       }
+      
       const isPremium = userData.role === "premium";
       const userDTO = new UserDTO(
         userData.first_name,
         userData.last_name,
-        userData.role
+        userData.role,
+        userData.email,
+        userData.age,
+        userData.cart
       );
       const isAdmin = userData.role === "admin";
       
       res.render("profile", { user: userDTO, isPremium, isAdmin });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
+    }
+  }
+
+  async home(req, res) {
+    try {
+      res.render("home", {tittle: "Pagina principal"})
     } catch (error) {
       console.error(error);
       res.status(500).send("Error interno del servidor");

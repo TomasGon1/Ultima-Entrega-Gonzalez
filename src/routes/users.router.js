@@ -25,11 +25,11 @@ router.post(
 
 
 //Logout
-router.post("/logout", userController.logout.bind(userController));
+router.get("/logout", userController.logout.bind(userController));
 
 //Github
-router.get("/github", userController.loginGitHub);
-router.get("/githubcallback", userController.loginGitHubCallback);
+router.get("/github", userController.loginGitHub.bind(userController));
+router.get("/githubcallback", userController.loginGitHubCallback.bind(userController));
 
 //Admin
 router.get("/admin", passport.authenticate("local"), authorize(["admin"]), userController.admin);

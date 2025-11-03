@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const ViewsController = require("../controllers/views.controller.js");
 const viewsController = new ViewsController();
-const authorize = require("../middleware/checkrole.js");
-const passport = require("passport");
+const authorizeRoles = require("../middleware/checkrole.js");
+
 
 //Vista de productos:
 router.get(
   "/products",
-  authorize(["usuario", "premium"]),
+  authorizeRoles("user", "premium"),
   viewsController.renderProducts
 );
 
@@ -24,14 +24,14 @@ router.get("/register", viewsController.renderRegister);
 //Vista chat:
 router.get(
   "/chat",
-  authorize(["usuario", "premium"]),
+  authorizeRoles("user", "premium"),
   viewsController.renderChat
 );
 
 //Vista real time products:
 router.get(
   "/realtimeproducts",
-  authorize(["admin"]),
+  authorizeRoles("admin"),
   viewsController.renderRealTimeProducts
 );
 
@@ -43,14 +43,16 @@ router.get("/confirmacion-envio", viewsController.renderConfirmation);
 //Panel usuario premium
 router.get(
   "/panel-premium",
-  authorize(["premium"]),
+  authorizeRoles("premium"),
   viewsController.renderPanelPremium
 );
 
 //Obtengo todos los usuarios
-router.get("/all-users", authorize(["admin"]), viewsController.renderAllUser);
+router.get("/all-users", authorizeRoles("admin"), viewsController.renderAllUser);
 
 //Perfil
-router.get("/profile", viewsController.profile);
+router.get("/profile", viewsController.profile.bind(viewsController));
+
+router.get("/", viewsController.home)
 
 module.exports = router;

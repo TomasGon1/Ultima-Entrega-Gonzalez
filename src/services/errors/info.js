@@ -8,14 +8,6 @@ const registerInfoError = (user) => {
     `;
 };
 
-const loginInfoError = (user) => {
-  return `Datos invalidos o incorrectos:
-    Email: ${user.email},
-    Contraseña
-    Vuelva a intentarlo!!
-    `;
-};
-
 const cartInfoError = (cartId) => {
   return `Error al encontrar un carrito con ese ID: ${cartId.cart}, por favor vuelva a intentarlo!`;
 };
@@ -30,7 +22,6 @@ const allUsersError = () => {
 
 module.exports = {
     registerInfoError,
-    loginInfoError,
     cartInfoError,
     productInfoError,
     allUsersError

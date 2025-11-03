@@ -25,7 +25,7 @@ const initializePassport = () => {
             });
           }
 
-          if (!isValidPassword) {
+          if (!isValidPassword(password, user)) {
             return done(null, false, {
               message: "Correo electronico o contraseña incorrecta",
             });
@@ -46,23 +46,34 @@ const initializePassport = () => {
         clientID: client_id,
         clientSecret: client_secret,
         callbackURL: callback_url,
+        scope: ["user:email"]
       },
       async (accessToken, refreshToken, profile, done) => {
-        try {
-          let user = await UserModel.findOne({
-            email: profile.emails[0].value,
-          });
-
-          if (!user) {
-            user = new UserModel({
-              email: profile.emails[0].value,
-            });
-          }
-
-          return done(null, user);
-        } catch (error) {
-          return done(error);
+       try {
+        if(!profile.emails || profile.emails.lenght === 0) {
+          return done(null, false, {message: "No se puedo obtener email del usuario"})
         }
+
+        let email = profile.emails[0].value;
+        let user = await UserModel.findOne({ email });
+
+        if(!user) {
+          user = new UserModel({
+            email,
+            first_name: profile.username || "GitHubUser",
+            last_name: "",
+            password: "",
+            age: 0,
+            role:"user",
+            oauth: true
+          });
+          await user.save();
+        }
+
+        return done(null, user);
+       } catch (error) {
+        return done(error)
+       }
       }
     )
   );

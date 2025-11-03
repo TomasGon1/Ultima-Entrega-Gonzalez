@@ -18,9 +18,11 @@
           <a href="/panel-premium"><button class="own-btn">Tu Panel</button></a>
           <a href="/chat"><button class="own-btn">Chat en vivo</button></a>
           <a href="/products"><button class="own-btn">Tienda</button></a>
+          <a href="/carts/{{user.cart}}"><button class="own-btn">Tu Carrito</button></a>
       {{else}}
         <a href="/chat"><button class="own-btn">Chat en vivo</button></a>
         <a href="/products"><button class="own-btn">Tienda</button></a>
+        <a href="/carts/{{user.cart}}"><button class="own-btn">Tu Carrito</button></a>
       {{/if}}    
     {{/if}}
     

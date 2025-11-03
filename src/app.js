@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const exphbs = require("express-handlebars");
+const path = require("path");
 const MongoStore = require("connect-mongo");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
@@ -28,14 +29,14 @@ const swaggerUiExpress = require("swagger-ui-express");
 //Middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("./src/public"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 app.use(errorHandler);
 app.use(
   session({
     secret: "secretCoder",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: mongo_url,
       ttl: 100,
@@ -52,9 +53,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Handlebars
-app.engine("handlebars", exphbs.engine());
+app.engine("handlebars", exphbs.engine({
+  defaultLayout: "main",
+  layoutsDir: path.join(__dirname, "views", "layouts"),
+  extname: ".handlebars"
+}));
 app.set("view engine", "handlebars");
-app.set("views", "./src/views");
+app.set("views", path.join(__dirname, "views"));
 
 //Uso de rutas
 app.use("/api/products", routerP);
